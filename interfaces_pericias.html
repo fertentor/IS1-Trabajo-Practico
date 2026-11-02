@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sistema de Gestión y Seguimiento de Pericias - Diseño de interfaces</title>
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    color: #222;
+    background: #e9e9e9;
+  }
+  #cabecera {
+    background: #1f4e79;
+    color: #fff;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  #cabecera h1 { margin: 0; font-size: 18px; font-weight: bold; }
+  #cabecera .empresa { font-size: 12px; }
+  #sesion { font-size: 12px; text-align: right; line-height: 1.5; }
+  #sesion a { color: #fff; }
+
+  #menu {
+    background: #d9e2ef;
+    border-bottom: 1px solid #9aa9bd;
+    padding: 0 20px;
+  }
+  #menu a {
+    display: inline-block;
+    padding: 8px 14px;
+    color: #1f4e79;
+    text-decoration: none;
+    border-right: 1px solid #b6c2d4;
+  }
+  #menu a:first-child { border-left: 1px solid #b6c2d4; }
+  #menu a.activo { background: #fff; font-weight: bold; }
+  #menu a:hover { background: #eef2f8; }
+
+  #contenido {
+    background: #fff;
+    border: 1px solid #bbb;
+    border-top: none;
+    margin: 0 20px;
+    padding: 18px 22px 24px;
+    min-height: 420px;
+  }
+  .pantalla { display: none; }
+  .pantalla.visible { display: block; }
+
+  h2 {
+    font-size: 17px;
+    margin: 0 0 4px;
+    color: #1f4e79;
+  }
+  .ayuda { margin: 0 0 14px; color: #555; font-size: 13px; }
+
+  fieldset {
+    border: 1px solid #a9a9a9;
+    margin: 0 0 14px;
+    padding: 10px 14px 12px;
+  }
+  legend { font-weight: bold; padding: 0 6px; color: #1f4e79; }
+
+  table.form { border-collapse: collapse; width: 100%; }
+  table.form td { padding: 4px 6px; vertical-align: top; }
+  table.form td.et { width: 150px; text-align: right; padding-top: 7px; }
+  table.form td.et.corta { width: 140px; }
+  input[type=text], input[type=date], input[type=time], select, textarea {
+    font-family: inherit;
+    font-size: 13px;
+    border: 1px solid #888;
+    padding: 3px 4px;
+    background: #fff;
+    box-sizing: border-box;
+  }
+  input[readonly], select[disabled] { background: #f0f0f0; color: #444; }
+  input.ch { width: 110px; }
+  input.md { width: 220px; }
+  select.md { width: 270px; }
+  input.gr, select.gr, textarea.gr { width: 100%; }
+  textarea { resize: vertical; }
+  .nota { font-size: 12px; color: #666; margin-top: 3px; }
+  .req { color: #b00000; }
+
+  .botones { margin-top: 6px; }
+  button, a.boton {
+    font-family: inherit;
+    font-size: 13px;
+    padding: 5px 16px;
+    margin-right: 6px;
+    border: 1px solid #666;
+    background: #e4e4e4;
+    color: #000;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+  }
+  button.principal { background: #1f4e79; color: #fff; border-color: #1f4e79; }
+
+  table.lista { border-collapse: collapse; width: 100%; margin-top: 4px; }
+  table.lista th, table.lista td {
+    border: 1px solid #999;
+    padding: 5px 7px;
+    text-align: left;
+    vertical-align: top;
+  }
+  table.lista th { background: #d9e2ef; font-size: 13px; }
+  table.lista tr:nth-child(even) td { background: #f6f6f6; }
+  .centro { text-align: center !important; }
+  .resumen { margin: 12px 0 4px; font-size: 13px; }
+  .paginas { margin-top: 10px; font-size: 13px; }
+  .paginas a { margin: 0 3px; color: #1f4e79; }
+
+  /* informe por pantalla */
+  .hoja {
+    border: 1px solid #888;
+    padding: 18px 24px 20px;
+    background: #fff;
+  }
+  .hoja .titulo { text-align: center; margin-bottom: 14px; }
+  .hoja .titulo .emp { font-size: 12px; color: #444; }
+  .hoja .titulo .nom { font-size: 18px; font-weight: bold; margin: 4px 0 2px; }
+  .hoja h3 {
+    font-size: 14px;
+    margin: 16px 0 6px;
+    padding-bottom: 2px;
+    border-bottom: 1px solid #888;
+    color: #1f4e79;
+  }
+  table.datos { border-collapse: collapse; width: 100%; }
+  table.datos td { padding: 3px 6px; vertical-align: top; }
+  table.datos td.k { width: 160px; font-weight: bold; }
+  table.datos td.k2 { width: 130px; font-weight: bold; }
+  .texto { text-align: justify; line-height: 1.5; margin: 4px 0; }
+  .firma { margin-top: 26px; text-align: right; font-size: 13px; }
+  .firma span { display: inline-block; border-top: 1px solid #333; padding-top: 3px; min-width: 240px; text-align: center; }
+
+  #pie {
+    margin: 0 20px;
+    padding: 10px 0 14px;
+    text-align: center;
+    font-size: 12px;
+    color: #555;
+  }
+</style>
+</head>
+<body>
+
+<div id="cabecera">
+  <div>
+    <div class="empresa">JustiData Solutions S.A.</div>
+    <h1>Sistema de Gestión y Seguimiento de Pericias</h1>
+  </div>
+  <div id="sesion">
+    Usuario: <b>mlopez</b> (Operador administrativo)<br>
+    Lunes 02/11/2026 &nbsp;|&nbsp; <a href="#">Cerrar sesión</a>
+  </div>
+</div>
+
+<div id="menu">
+  <a href="#nuevo" id="m-nuevo">Nuevo informe</a>
+  <a href="#buscar" id="m-buscar">Buscar informes</a>
+  <a href="#informe" id="m-informe">Informe por pantalla</a>
+</div>
+
+<div id="contenido">
+
+  <!-- ============ 1. FORMULARIO DE CARGA DE UN NUEVO INFORME ============ -->
+  <div class="pantalla" id="p-nuevo">
+    <h2>Carga de un nuevo informe</h2>
+    <p class="ayuda">Los campos marcados con <span class="req">*</span> son obligatorios. El primer movimiento de una pericia se registra como Informe Pericial y los siguientes como Ampliación de Pericia.</p>
+
+    <form onsubmit="return false;">
+
+      <fieldset>
+        <legend>Pericia</legend>
+        <table class="form">
+          <tr>
+            <td class="et">Organismo solicitante <span class="req">*</span></td>
+            <td>
+              <select class="md" name="organismo">
+                <option>Seleccione...</option>
+                <option selected>Juzgado Civil y Comercial N° 3 - Paraná</option>
+                <option>Juzgado de Familia N° 1 - Concordia</option>
+                <option>Fiscalía de Género N° 2 - Paraná</option>
+                <option>Juzgado de Garantías N° 1 - Gualeguaychú</option>
+                <option>Estudio Jurídico Benítez y Asociados</option>
+              </select>
+            </td>
+            <td class="et corta">N° de pericia <span class="req">*</span></td>
+            <td>
+              <input type="text" class="ch" name="nro_pericia" value="1043">
+              <button type="button">Buscar pericia</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="et">Expediente</td>
+            <td><input type="text" class="md" value="21.457" readonly></td>
+            <td class="et corta">Tipo de pericia</td>
+            <td><input type="text" class="md" value="Psicológica" readonly></td>
+          </tr>
+          <tr>
+            <td class="et">Estado actual</td>
+            <td><input type="text" class="md" value="En elaboración de informe" readonly></td>
+            <td class="et corta">Área técnica</td>
+            <td><input type="text" class="md" value="Área de Psicología Forense" readonly></td>
+          </tr>
+        </table>
+      </fieldset>
+
+      <fieldset>
+        <legend>Datos del informe</legend>
+        <table class="form">
+          <tr>
+            <td class="et">N° de movimiento</td>
+            <td><input type="text" class="ch" value="4" readonly> <span class="nota">Se asigna al guardar.</span></td>
+            <td class="et corta">Clase</td>
+            <td><input type="text" class="md" value="Informe Pericial" readonly></td>
+          </tr>
+          <tr>
+            <td class="et">Fecha <span class="req">*</span></td>
+            <td><input type="text" class="ch" name="fecha" value="02/11/2026" placeholder="dd/mm/aaaa"></td>
+            <td class="et corta">Tipo de actividad <span class="req">*</span></td>
+            <td>
+              <select class="md" name="tipo_actividad">
+                <option>Seleccione...</option>
+                <option>Recepción de la solicitud de pericia</option>
+                <option>Asignación de peritos</option>
+                <option>Entrevista</option>
+                <option>Evaluación</option>
+                <option>Análisis de documentación</option>
+                <option>Realización de pruebas técnicas</option>
+                <option selected>Elaboración del informe</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td class="et">Perito responsable <span class="req">*</span></td>
+            <td>
+              <select class="md" name="perito">
+                <option>Seleccione...</option>
+                <option selected>Suárez, Carolina (Mat. 2217)</option>
+                <option>Domínguez, Hernán (Mat. 1890)</option>
+              </select>
+            </td>
+            <td class="et corta">Actividad programada</td>
+            <td>
+              <select class="md" name="actividad">
+                <option>Ninguna</option>
+                <option selected>Entrevista - 28/10/2026 10:00</option>
+                <option>Evaluación - 30/10/2026 09:30</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td class="et">Descripción detallada <span class="req">*</span></td>
+            <td colspan="3">
+              <textarea class="gr" rows="5" name="descripcion">Se presenta el informe pericial psicológico elaborado a partir de las entrevistas realizadas los días 21/10 y 28/10 y de la aplicación de las técnicas de evaluación psicológica correspondientes. Se adjuntan conclusiones y recomendaciones para la autoridad judicial.</textarea>
+            </td>
+          </tr>
+          <tr>
+            <td class="et">Cargado por</td>
+            <td><input type="text" class="md" value="mlopez - Operador administrativo" readonly></td>
+            <td colspan="2"></td>
+          </tr>
+        </table>
+      </fieldset>
+
+      <fieldset>
+        <legend>Persona evaluada</legend>
+        <table class="form">
+          <tr>
+            <td class="et">Tipo de documento</td>
+            <td>
+              <select class="ch" name="tipo_doc">
+                <option selected>DNI</option>
+                <option>LC</option>
+                <option>LE</option>
+                <option>Pasaporte</option>
+              </select>
+              <input type="text" class="ch" name="nro_doc" value="32.884.150">
+            </td>
+            <td class="et corta">Apellido y nombre</td>
+            <td><input type="text" class="md" value="Rojas, Marcelo Ariel" readonly></td>
+          </tr>
+          <tr>
+            <td class="et">Tipo de evaluación</td>
+            <td colspan="3"><input type="text" class="gr" name="tipo_eval" value="Evaluación psicodiagnóstica"></td>
+          </tr>
+          <tr>
+            <td class="et">Hallazgos técnicos</td>
+            <td colspan="3"><textarea class="gr" rows="3" name="hallazgos">No se observan indicadores de alteración de las funciones psíquicas superiores. Se constata capacidad para comprender los actos y dirigir sus acciones.</textarea></td>
+          </tr>
+        </table>
+      </fieldset>
+
+      <div class="botones">
+        <button type="submit" class="principal">Guardar informe</button>
+        <button type="reset">Limpiar</button>
+        <a class="boton" href="#buscar">Cancelar</a>
+      </div>
+    </form>
+  </div>
+
+  <!-- ============ 2. PANTALLA DE BÚSQUEDA DE INFORMES ============ -->
+  <div class="pantalla" id="p-buscar">
+    <h2>Búsqueda de informes</h2>
+    <p class="ayuda">Complete uno o más filtros y presione Buscar. Si no completa ninguno se listan todas las pericias.</p>
+
+    <form onsubmit="return false;">
+      <fieldset>
+        <legend>Filtros de búsqueda</legend>
+        <table class="form">
+          <tr>
+            <td class="et">Organismo solicitante</td>
+            <td>
+              <select class="md">
+                <option>Todos</option>
+                <option>Juzgado Civil y Comercial N° 3 - Paraná</option>
+                <option>Juzgado de Familia N° 1 - Concordia</option>
+                <option>Fiscalía de Género N° 2 - Paraná</option>
+                <option>Juzgado de Garantías N° 1 - Gualeguaychú</option>
+                <option>Estudio Jurídico Benítez y Asociados</option>
+              </select>
+            </td>
+            <td class="et corta">N° de pericia</td>
+            <td><input type="text" class="ch"></td>
+          </tr>
+          <tr>
+            <td class="et">Expediente</td>
+            <td><input type="text" class="md"></td>
+            <td class="et corta">Tipo de pericia</td>
+            <td>
+              <select class="md">
+                <option>Todos</option>
+                <option>Médica</option>
+                <option>Psicológica</option>
+                <option>Informática</option>
+                <option>Contable</option>
+                <option>Accidentológica</option>
+                <option>Documentológica</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td class="et">Estado actual</td>
+            <td>
+              <select class="md">
+                <option>Todos</option>
+                <option>Solicitada</option>
+                <option>En análisis</option>
+                <option>En proceso de evaluación</option>
+                <option>En elaboración de informe</option>
+                <option>Finalizada</option>
+                <option>Suspendida</option>
+                <option>Cancelada</option>
+                <option>Impugnada</option>
+                <option>En mora</option>
+              </select>
+            </td>
+            <td class="et corta">Perito interviniente</td>
+            <td><input type="text" class="md" placeholder="Apellido o N° de matrícula"></td>
+          </tr>
+          <tr>
+            <td class="et">Persona involucrada</td>
+            <td><input type="text" class="md" placeholder="Apellido o N° de documento"></td>
+            <td class="et corta">Fecha de solicitud</td>
+            <td>
+              desde <input type="text" class="ch" value="01/10/2026" placeholder="dd/mm/aaaa"> hasta <input type="text" class="ch" value="02/11/2026" placeholder="dd/mm/aaaa">
+            </td>
+          </tr>
+        </table>
+        <div class="botones" style="margin-top:8px; margin-left:6px;">
+          <button type="submit" class="principal">Buscar</button>
+          <button type="reset">Limpiar filtros</button>
+        </div>
+      </fieldset>
+    </form>
+
+    <div class="resumen"><b>Resultados:</b> 8 pericias encontradas</div>
+    <table class="lista">
+      <thead>
+        <tr>
+          <th>Organismo solicitante</th>
+          <th>N° pericia</th>
+          <th>Expediente</th>
+          <th>Tipo</th>
+          <th>Estado</th>
+          <th>Fecha solic.</th>
+          <th>Perito responsable</th>
+          <th class="centro">Informes</th>
+          <th class="centro">Acción</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Juzgado Civil y Comercial N° 3 - Paraná</td><td>1043</td><td>21.457</td><td>Psicológica</td><td>En elaboración de informe</td><td>06/10/2026</td><td>Suárez, Carolina</td><td class="centro">1</td>
+          <td class="centro"><a href="#informe">Ver informe</a></td>
+        </tr>
+        <tr>
+          <td>Juzgado Civil y Comercial N° 3 - Paraná</td><td>1051</td><td>21.602</td><td>Contable</td><td>En análisis</td><td>09/10/2026</td><td>Pereyra, Gustavo</td><td class="centro">0</td>
+          <td class="centro"><a href="#informe">Ver informe</a></td>
+        </tr>
+        <tr>
+          <td>Fiscalía de Género N° 2 - Paraná</td><td>287</td><td>FG-2026-0391</td><td>Médica</td><td>Finalizada</td><td>02/10/2026</td><td>Domínguez, Hernán</td><td class="centro">2</td>
+          <td class="centro"><a href="#informe">Ver informe</a></td>
+        </tr>
+        <tr>
+          <td>Fiscalía de Género N° 2 - Paraná</td><td>291</td><td>FG-2026-0402</td><td>Informática</td><td>En proceso de evaluación</td><td>13/10/2026</td><td>Ledesma, Julián</td><td class="centro">0</td>
+          <td class="centro"><a href="#informe">Ver informe</a></td>
+        </tr>
+        <tr>
+          <td>Juzgado de Familia N° 1 - Concordia</td><td>118</td><td>9.873</td><td>Psicológica</td><td>Finalizada</td><td>15/10/2026</td><td>Suárez, Carolina</td><td class="centro">3</td>
+          <td class="centro"><a href="#informe">Ver informe</a></td>
+        </tr>
+        <tr>
+          <td>Juzgado de Garantías N° 1 - Gualeguaychú</td><td>64</td><td>IPP 5530/26</td><td>Accidentológica</td><td>Solicitada</td><td>20/10/2026</td><td>-</td><td class="centro">0</td>
+          <td class="centro"><a href="#informe">Ver informe</a></td>
+        </tr>
+        <tr>
+          <td>Estudio Jurídico Benítez y Asociados</td><td>12</td><td>S/N</td><td>Documentológica</td><td>Suspendida</td><td>22/10/2026</td><td>Quiroga, Marta</td><td class="centro">1</td>
+          <td class="centro"><a href="#informe">Ver informe</a></td>
+        </tr>
+        <tr>
+          <td>Juzgado Civil y Comercial N° 3 - Paraná</td><td>1060</td><td>21.688</td><td>Contable</td><td>En mora</td><td>27/10/2026</td><td>Pereyra, Gustavo</td><td class="centro">1</td>
+          <td class="centro"><a href="#informe">Ver informe</a></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="paginas">Página 1 de 1 &nbsp; <a href="#buscar">&laquo; Anterior</a> <b>1</b> <a href="#buscar">Siguiente &raquo;</a></div>
+  </div>
+
+  <!-- ============ 3. INFORME POR PANTALLA ============ -->
+  <div class="pantalla" id="p-informe">
+    <div class="hoja">
+      <div class="titulo">
+        <div class="emp">JustiData Solutions S.A.</div>
+        <div class="nom">Informe Pericial N° 4</div>
+        <div class="emp">Pericia 1043 - Juzgado Civil y Comercial N° 3 - Paraná</div>
+      </div>
+
+      <h3>Datos de la pericia</h3>
+      <table class="datos">
+        <tr>
+          <td class="k">Organismo solicitante:</td><td>Juzgado Civil y Comercial N° 3 - Paraná</td>
+          <td class="k2">N° de pericia:</td><td>1043</td>
+        </tr>
+        <tr>
+          <td class="k">Expediente:</td><td>21.457</td>
+          <td class="k2">Tipo de pericia:</td><td>Psicológica</td>
+        </tr>
+        <tr>
+          <td class="k">Fecha de solicitud:</td><td>06/10/2026</td>
+          <td class="k2">Área técnica:</td><td>Área de Psicología Forense</td>
+        </tr>
+        <tr>
+          <td class="k">Estado actual:</td><td>En elaboración de informe</td>
+          <td class="k2">Clase:</td><td>Informe Pericial</td>
+        </tr>
+        <tr>
+          <td class="k">Descripción del caso:</td><td colspan="3">Evaluación de capacidad en juicio de insania promovido ante el juzgado.</td>
+        </tr>
+      </table>
+
+      <h3>Datos del informe</h3>
+      <table class="datos">
+        <tr>
+          <td class="k">Fecha:</td><td>02/11/2026</td>
+          <td class="k2">Tipo de actividad:</td><td>Elaboración del informe</td>
+        </tr>
+        <tr>
+          <td class="k">Perito responsable:</td><td>Suárez, Carolina</td>
+          <td class="k2">Cargado por:</td><td>mlopez (Operador administrativo)</td>
+        </tr>
+      </table>
+      <p class="texto"><b>Descripción:</b> Se presenta el informe pericial psicológico elaborado a partir de las entrevistas realizadas los días 21/10 y 28/10 y de la aplicación de las técnicas de evaluación psicológica correspondientes. Se adjuntan conclusiones y recomendaciones para la autoridad judicial.</p>
+
+      <h3>Peritos intervinientes</h3>
+      <table class="lista">
+        <thead>
+          <tr><th>Apellido y nombre</th><th>Especialidad</th><th>Matrícula</th><th>Organismo profesional</th><th>Rol</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Suárez, Carolina</td><td>Psicología forense</td><td>2217</td><td>Colegio de Psicólogos de Entre Ríos</td><td>Perito oficial</td></tr>
+          <tr><td>Navarro, Esteban</td><td>Psiquiatría</td><td>1534</td><td>Colegio Médico de Entre Ríos</td><td>Perito de parte</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Personas evaluadas</h3>
+      <table class="lista">
+        <thead>
+          <tr><th>Documento</th><th>Apellido y nombre</th><th>Tipo de evaluación</th><th>Hallazgos técnicos</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>DNI 32.884.150</td><td>Rojas, Marcelo Ariel</td><td>Evaluación psicodiagnóstica</td><td>No se observan indicadores de alteración de las funciones psíquicas superiores. Se constata capacidad para comprender los actos y dirigir sus acciones.</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Historial de estados</h3>
+      <table class="lista">
+        <thead>
+          <tr><th>Fecha</th><th>Estado</th><th>Usuario</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>06/10/2026</td><td>Solicitada</td><td>mlopez</td></tr>
+          <tr><td>09/10/2026</td><td>En análisis</td><td>mlopez</td></tr>
+          <tr><td>21/10/2026</td><td>En proceso de evaluación</td><td>csuarez</td></tr>
+          <tr><td>02/11/2026</td><td>En elaboración de informe</td><td>csuarez</td></tr>
+        </tbody>
+      </table>
+
+      <div class="firma"><span>Suárez, Carolina - Mat. 2217<br>Perito oficial</span></div>
+    </div>
+    <div class="botones" style="margin-top:12px;">
+      <button type="button" class="principal" onclick="window.print()">Imprimir</button>
+      <a class="boton" href="#buscar">Volver a la búsqueda</a>
+    </div>
+  </div>
+
+</div>
+
+<div id="pie">JustiData Solutions S.A. - Sistema de Gestión y Seguimiento de Pericias - Maqueta de interfaces 2026</div>
+
+<script>
+  // muestra una sola pantalla segun el hash de la url
+  function mostrar() {
+    var id = (location.hash || '#buscar').replace('#', '');
+    if (id !== 'nuevo' && id !== 'buscar' && id !== 'informe') id = 'buscar';
+    var pantallas = document.querySelectorAll('.pantalla');
+    for (var i = 0; i < pantallas.length; i++) {
+      pantallas[i].className = 'pantalla' + (pantallas[i].id === 'p-' + id ? ' visible' : '');
+    }
+    var enlaces = document.querySelectorAll('#menu a');
+    for (var j = 0; j < enlaces.length; j++) {
+      enlaces[j].className = (enlaces[j].id === 'm-' + id) ? 'activo' : '';
+    }
+    window.scrollTo(0, 0);
+  }
+  window.addEventListener('hashchange', mostrar);
+  mostrar();
+</script>
+</body>
+</html>
